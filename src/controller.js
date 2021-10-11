@@ -235,7 +235,7 @@ fc.login = function() {
                 creds.access_token = resp.obj.id;
                 rest.client.clientAuthorizations.add('access_token', new Swagger.ApiKeyAuthorization('access_token', resp.obj.id, 'query'));
             }
-            rest.client.OpenframeUser.OpenframeUser_config().then(function(conf_resp) {
+            rest.client.OpenframeUser.OpenframeUser_cfg().then(function(conf_resp) {
                 debug(resp);
                 config.ofrc.pubsub_url = conf_resp.obj.config.pubsub_url;
                 config.save().then(function() {
