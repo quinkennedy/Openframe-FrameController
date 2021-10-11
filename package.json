@@ -9,8 +9,7 @@
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "test": "npm run lint && ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
     "test-coveralls": "npm run lint && ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- -R spec && npm run coveralls",
-    "patch-release": "npm version patch && npm publish && git push origin --follow-tags",
-    "install": "./install.sh"
+    "patch-release": "npm version patch && npm publish && git push origin --follow-tags"
   },
   "bin": {
     "openframe": "./bin/cli.js"
@@ -46,7 +45,7 @@
     "request": "^2.88.0",
     "request-progress": "^3.0.0",
     "requireg": "^0.2.2",
-    "shelljs": "^0.7.0",
+    "shelljs": "^0.8.3",
     "single-line-log": "^1.1.2",
     "swagger-client": "^2.1.9"
   },
