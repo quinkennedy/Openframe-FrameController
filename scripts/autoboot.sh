@@ -16,6 +16,6 @@ else
         # set the terminal text color to black
         setterm --foreground black --background black --cursor off --clear all
         # start up openframe as a background process
-        nohup openframe >/dev/null 2>&1 &
+        DEBUG=* nohup openframe >/var/log/openframe.log 2>&1 &
     fi
 fi
