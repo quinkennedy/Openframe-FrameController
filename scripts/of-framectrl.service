@@ -1,5 +1,7 @@
 # Copy this file to /lib/systemd/system/of-framectrl.service then run
-# sudo systemctl daemon-reload; sudo service of-framectrl start
+# sudo systemctl enable systemd-networkd-wait-online.service
+# sudo systemctl enable of-framectrl
+# sudo reboot
 [Unit]
 Description=Openframe Frame Controller
 After=network-online.target
