@@ -86,7 +86,15 @@ npm install
 npm audit fix
 ```
 
-To activate the `openframe` command and start the frame controller software, first create a link, then start the `openframe` software. Do not use `DEBUG=*` in front of the `openframe` command if you don't need additional information about the startup process:
+To start, stop and monitor the frame controller software install and activate the system service definition (of-framectrl.service) delivered as part of this repository executing the following commands:
+```
+sudo cp -p ~/Openframe-FrameController/scripts/of-framectrl.service /lib/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable of-framectrl.service
+sudo systemctl enable systemd-networkd-wait-online.service
+```
+
+To activate the `openframe` command and start the frame controller software, first create a link, then start the `openframe` software manually. Do not use `DEBUG=*` in front of the `openframe` command if you don't need additional information about the startup process:
 ```
 sudo ln -s ~/Openframe-FrameController/bin/cli.js /usr/local/bin/openframe
 source ~/.bashrc
@@ -98,21 +106,13 @@ Once started, the first time the Openframe frame controller software will ask yo
 ? Enter your Openframe username: ppan
 ? Enter your Openframe password: ******
 ? Enter a name for this Frame: my-frame
-? Do you want to boot openframe on startup?: (Y/n) n
+? Do you want to boot openframe on startup?: (Y/n) y
 ```
 
 A short while after answering the questions you should see the following messages:
 ```
 [o]   Connected! You can now push artwork to this frame.
 This frame should now appear as my-frame when you log into Openframe at https://oframe.example.com.
-```
-The easiest way to control the frame controller software is to install and activate the system service definition (of-framectrl.service) delivered as part of the software. After rebooting the frame controller software should start automatically. To install and activate the service execute the following commands:
-```
-sudo cp -p ~/Openframe-FrameController/scripts/of-framectrl.service /lib/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable of-framectrl.service
-sudo systemctl enable systemd-networkd-wait-online.service
-sudo reboot
 ```
 ---
 
