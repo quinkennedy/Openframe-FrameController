@@ -10,19 +10,11 @@ The block diagram below represents the proposed architecture for the Openframe p
 
 ![alt tag](https://raw.githubusercontent.com/OpenframeProject/openframeproject.github.io/master/img/API%20Diagram%20v3.jpg)
 
-
 ## Install Node and NPM
 The Openframe frame controller is based on nodejs and npm so these packages have to be installed first. There are two ways to do this which are explained below.
 
-### Standard Installation
-This is simple and straightforward using the Debian standard package manager. Run the following commands
-```
-sudo apt update && sudo apt install nodejs npm
-```
-This version of the frame controller software need at least version 12.x.x of nodejs but has also been tested with the current LTS version 14.x.x
-
 ### NVM based Installation
-It might be helpful to use the node virtual machine (nmv) instead of a globallly installed version of node and npm. This is particularily useful to test a software with different vesions of the underlying node environment. When installing the Openframe client as described below this will automatically install nvm first so the following command does not need ot be executed explictly
+In order to be able to run the frame controller software without root privileges but still be able to easily install node modules the software needs to run based on the node virtual machine (nmv). This also makes it possible to test the software with different vesions of the underlying node environment. In order to install nvm use the following commands:
 ```
 curl -s https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
 source ~/.bashrc
