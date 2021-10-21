@@ -11,14 +11,10 @@ Wants=network-online.target
 Type=simple
 User=maebi
 PIDFile=/run/offramectrl.pid
-Environment="NVM_CD_FLAGS="
-Environment="NVM_DIR=/home/maebi/.nvm"
-Environment="NVM_IOJS_ORG_MIRROR=https://iojs.org/dist"
-Environment="NVM_NODEJS_ORG_MIRROR=https://nodejs.org/dist"
-Environment="NVM_BIN=/home/maebi/.nvm/versions/node/v14.18.0/bin"
-Environment="PATH=/home/maebi/.nvm/versions/node/v14.18.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games"
-DEBUG=*
-WorkingDirectory=/home/maebi/.nvm/versions/node/v14.18.0/bin/
+EnvironmentFile="~/.openframe/.env"
+Environment="PATH=/home/maebi/.nvm/versions/node/v14.18.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games"
+Environment="DEBUG=*"
+WorkingDirectory=/home/maebi/.nvm/versions/node/v14.18.1/bin/
 ExecStart=/usr/local/bin/openframe
 
 [Install]
