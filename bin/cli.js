@@ -3,7 +3,7 @@
 var program = require('commander'),
     inquirer = require('inquirer'),
     fs = require('fs'),
-    shell = require('shelljs'),
+    exec = require('child_process').exec,
     debug = require('debug')('openframe:cli'),
     p = require('../package.json'),
     version = p.version,
@@ -157,13 +157,33 @@ function saveAnswers(answers) {
 
 function enableAutoboot() {
     debug('----->>> Enable Autoboot');
-    disableAutoboot();
-    shell.ShellString('source ~/.openframe/autoboot.sh\n').toEnd('~/.bashrc');
+
+    exec("sudo systemctl enable of-framectrl.service", (error, stdout, stderr) => {
+        if (error) {
+            debug(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            debug(`stderr: ${stderr}`);
+            return;
+        }
+        debug(`stdout: ${stdout}`);
+    });
 }
 
 function disableAutoboot() {
     debug('----->>> Disable Autoboot');
-    shell.sed('-i', /^.*openframe.*autoboot.*$/, '', '~/.bashrc');
+    exec("sudo systemctl disable of-framectrl.service", (error, stdout, stderr) => {
+        if (error) {
+            debug(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            debug(`stderr: ${stderr}`);
+            return;
+        }
+        debug(`stdout: ${stdout}`);
+    });
 }
 
 /**
