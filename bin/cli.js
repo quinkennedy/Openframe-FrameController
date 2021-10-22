@@ -18,6 +18,7 @@ var program = require('commander'),
 program
     .version(version)
     .option('-r, --reset', 'Reset this frame. Erases current frame data, and registers this as a new frame.')
+    .option('-s, --stop', 'Stop this frame but keep all data.')
     .option('-i, --install [extension]', 'Install an extension. The argument should be in the npm package name format, e.g. "openframe-image" or "openframe-image@^0.1.0"')
     .option('-u, --uninstall [extension]', 'Uninstall an extension. The argument should be the npm package name, e.g. "openframe-image"')
     .arguments('[username] [password] [framename]')
@@ -52,10 +53,29 @@ Promise.all(initializers)
 
 function processArgs() {
     debug('processArgs');
+
+    if (program.stop) {
+        exec("sudo service of-framectrl stop", (error, stdout, stderr) => {
+            if (error) {
+                debug(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                debug(`stderr: ${stderr}`);
+                return;
+            }
+            debug(`stdout: ${stdout}`);
+        });
+        console.log('Service of-framectrl stopped');
+        process.exit(0);
+    }
+
     // if username was passed, set it
     user.state.username = program.username || user.state.username;
+
     // if password was passed, set it
     user.state.password = program.password || user.state.password;
+
     // if framename passed, set it
     frame.state.name = program.framename || frame.state.name;
 
@@ -100,10 +120,11 @@ function processArgs() {
     if (questions.length) {
         inquirer.prompt(questions, function(answers) {
             saveAnswers(answers)
-                .then(init);
+                .then(console.log('Settings have been stored'))
+                .then(init(true));
         });
     } else {
-        init();
+        init(false);
     }
 }
 
@@ -143,6 +164,7 @@ function saveAnswers(answers) {
         }
         if (answers.frame_name) {
             frame.state.name = answers.frame_name;
+            // frame.state.id = 0;
         }
         if (answers.autoboot) {
             enableAutoboot();
@@ -152,7 +174,7 @@ function saveAnswers(answers) {
         config.ofrc.autoboot = answers.autoboot;
     }
 
-    return Promise.all([config.save(), user.save()]);
+    return Promise.all([config.save(), user.save(), frame.persistStateToFile()]);
 }
 
 function enableAutoboot() {
@@ -189,21 +211,52 @@ function disableAutoboot() {
 /**
  * Start up the frame
  */
-function init() {
-    debug('Initializing Frame Controller');
-
+function init(restart) {
     // if we've gotten here, presumably we have a user/pass
     if (program.install) {
         console.log('\n');
         console.log('[o]   Installing ' + program.install + ' extension...');
         console.log('\n');
         frame_controller.installExtension(program.install);
+
     } else if (program.uninstall) {
         console.log('\n');
         console.log('[o]   Uninstalling ' + program.uninstall + ' extension...');
         console.log('\n');
         frame_controller.uninstallExtension(program.uninstall);
+
+    } else if (restart) {
+        exec("sudo service of-framectrl restart", (error, stdout, stderr) => {
+            if (error) {
+                debug(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                debug(`stderr: ${stderr}`);
+                return;
+            }
+            debug(`stdout: ${stdout}`);
+        });
+        console.log('Service of-framectrl (re)started');
+
+    } else if (! process.env.SERVICE) {
+        // This call is coming from the command line, so just start the service
+        exec("sudo service of-framectrl start", (error, stdout, stderr) => {
+            if (error) {
+                debug(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                debug(`stderr: ${stderr}`);
+                return;
+            }
+            debug(`stdout: ${stdout}`);
+        });
+        console.log('Service of-framectrl started');
+
     } else {
+        // This call is coming from the service unit, so start the actual executable
+        debug('Initializing Frame Controller');
         frame_controller.init();
     }
 }

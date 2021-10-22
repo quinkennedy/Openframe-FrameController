@@ -14,6 +14,7 @@ PIDFile=/run/offramectrl.pid
 EnvironmentFile="~/.openframe/.env"
 Environment="PATH=/home/maebi/.nvm/versions/node/v14.18.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games"
 Environment="DEBUG=*"
+Environment="SERVICE=true"
 WorkingDirectory=/home/maebi/.nvm/versions/node/v14.18.1/bin/
 ExecStart=/usr/local/bin/openframe
 
