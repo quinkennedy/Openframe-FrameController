@@ -61,14 +61,15 @@ config.load = function() {
         p = new Promise(function(resolve, reject) {
             jsonfile.readFile(ofrc_file, function(err, ofrc) {
                 if (err) {
+                    console.log("Can not read configuration from "+ofrc_file+"\n"+ err);
                     reject(err);
                     return;
                 }
                 self.ofrc = ofrc;
 
                 // attach full api_url to the config
-                var network = self.ofrc.network;
-                network.api_url = network.api_protocol + '://' + network.api_domain + ':' + network.api_port;
+                // var network = self.ofrc.network;
+                // network.api_url = network.api_protocol + '://' + network.api_domain + ':' + network.api_port;
 
                 resolve(self.ofrc);
             });
