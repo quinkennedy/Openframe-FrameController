@@ -53,6 +53,7 @@ Now setup the settings directory manually and copy the main configuration file (
 mkdir -p ~/.openframe
 cp -p .ofrc ~/.openframe/
 env | grep NVM_ > ~/.openframe/.env
+echo "PATH=$PATH" >> ~/.openframe/.env
 cp ./scripts/autoboot.sh ~/.openframe/autoboot.sh
 ```
 
