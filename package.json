@@ -1,6 +1,6 @@
 {
   "name": "openframe",
-  "version": "0.4.12",
+  "version": "0.5.0",
   "description": "Openframe controller process which runs on the machine controlling the frame.",
   "main": "index.js",
   "scripts": {
@@ -27,6 +27,9 @@
     {
       "name": "Ishac Bertran",
       "url": "http://ishacbertran.com"
+    },
+    {
+      "name": "Matthias Aebi"
     }
   ],
   "license": "GPL-3.0",
@@ -50,10 +53,6 @@
     "swagger-client": "^2.1.9"
   },
   "devDependencies": {
-    "openframe-glslviewer": "*",
-    "openframe-image": "*",
-    "openframe-website": "*",
-    "openframe-video": "*",
     "coveralls": "^2.11.9",
     "eslint": "^6.8.0",
     "istanbul": "^0.4.2",
@@ -70,6 +69,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/OpenframeProject/Openframe"
+    "url": "https://github.com/mataebi/Openframe-FrameController"
   }
 }
