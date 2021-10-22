@@ -73,7 +73,7 @@ npm install
 npm audit fix
 ```
 
-To start, stop and monitor the frame controller software install and activate the system service definition (of-framectrl.service) delivered as part of this repository executing the following commands:
+To start, stop and monitor the frame controller software we use a system service in the background. So you need to install and activate the system service definition (of-framectrl.service) delivered as part of this repository executing the following commands:
 ```
 sudo cp -p ~/Openframe-FrameController/scripts/of-framectrl.service /lib/systemd/system/
 sudo systemctl daemon-reload
@@ -81,26 +81,68 @@ sudo systemctl enable of-framectrl.service
 sudo systemctl enable systemd-networkd-wait-online.service
 ```
 
-Activate the `openframe` command by creating a link, then start the `openframe` software manually once. Adding `DEBUG=*` in front of the `openframe` command shows additional debugging information:
+Activate the `openframe` command by creating a link, then start the `openframe` software.
 ```
 sudo ln -s ~/Openframe-FrameController/bin/cli.js /usr/local/bin/openframe
-DEBUG=* openframe
+openframe
 ```
-Once started, the first time or when using the `-r` option to reconfigure the frane. the Openframe frame controller software will ask you the following questions:
+Once started, the first time or when using the `-r` or '--reset' option to reconfigure the frane, the Openframe frame controller software will ask you the following questions to connect the frame o the Openframe services:
 ```
 ...
 ? Enter your Openframe username: ppan
 ? Enter your Openframe password: ******
 ? Enter a name for this Frame: my-frame
 ? Do you want to boot openframe on startup?: (Y/n) y
-? Do you want to start openframe now? y
 ```
-
-When requesting the software to start the service in the last question, you should see the following messages after a moment:
+After a shor while you should see the following messages indicating that the software has been started properly:
 ```
 [o]   Connected! You can now push artwork to this frame.
 This frame should now appear as my-frame when you log into Openframe at https://oframe.example.com.
 ```
+If something goes wrong and you need logging information to figure out what the problem might be, use the following command. Usng the `-f`opion will show the latest log information in an ongoing way. Leaving this flag away will instead show all log information collected so far:
+```
+journalctl -f -u of-framectrl
+```
+To stop the openframe controller software use the following command:
+```
+openframe -s
+```
+If you wan to reset the frame to rename it, connec i to a different server or change the credentias used to login to the openframe server use the command below. This will reset all configuration data and announce the frame as a new device to the servers `specified in ~/.openframe/.ofrc`:
+```
+openframe -r
+? Enter your Openframe username: ppan
+...
+```
+To install or remove a openframe viewer extension use the following commands:
+```
+# Install openframe extension
+openframe -i <extension-name> #
+
+# Uninstall openframe extension
+openframe -u <extension-name> #
+```
+`<extension-name>` must be specified as one of the following
+```
+# Gihtub repository, master branch
+gihub:mataebi/Openframe-ImageViewer
+
+# Gihtub repository, specific branch, e.g. mybranch
+gihub:mataebi/Openframe-ImageViewer#mybranch
+
+# Local directory containing the files of an extension
+file:~/my-local-ext/
+
+# NPM package name (latest version)
+openframe-image
+
+# NPM package name, specific version
+openframe-image@^0.1.0
+```
+After (un)installing an extension, you have to stop and start the openframe controller in order to activate the change
+```
+openframe -s; openframe
+```
+
 ---
 
 #### Modules
