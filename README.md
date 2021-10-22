@@ -52,13 +52,8 @@ Now setup the settings directory manually and copy the main configuration file (
 ```
 mkdir -p ~/.openframe
 cp -p .ofrc ~/.openframe/
+env | grep NVM_ > ~/.openframe/.env
 cp ./scripts/autoboot.sh ~/.openframe/autoboot.sh
-```
-
-Now create the logfile that will be used by autoboot.sh and make it writable for the user that will run the frame controller software
-```
-sudo touch /var/log/openframe.log
-sudo chown $(id -un):$(id -gn) /var/log/openframe.log
 ```
 
 If you plan to setup and use your own Openframe server instead of the public system available at www.openframe.io you need to edit the frame controller configuration file (.ofrc) and adjust the URLs of the API and the web app server to match your services.
@@ -86,22 +81,22 @@ sudo systemctl enable of-framectrl.service
 sudo systemctl enable systemd-networkd-wait-online.service
 ```
 
-To activate the `openframe` command and start the frame controller software, first create a link, then start the `openframe` software manually. Do not use `DEBUG=*` in front of the `openframe` command if you don't need additional information about the startup process:
+Activate the `openframe` command by creating a link, then start the `openframe` software manually once. Adding `DEBUG=*` in front of the `openframe` command shows additional debugging information:
 ```
 sudo ln -s ~/Openframe-FrameController/bin/cli.js /usr/local/bin/openframe
-source ~/.bashrc
 DEBUG=* openframe
 ```
-Once started, the first time the Openframe frame controller software will ask you the following questions:
+Once started, the first time or when using the `-r` option to reconfigure the frane. the Openframe frame controller software will ask you the following questions:
 ```
 ...
 ? Enter your Openframe username: ppan
 ? Enter your Openframe password: ******
 ? Enter a name for this Frame: my-frame
 ? Do you want to boot openframe on startup?: (Y/n) y
+? Do you want to start openframe now? y
 ```
 
-A short while after answering the questions you should see the following messages:
+When requesting the software to start the service in the last question, you should see the following messages after a moment:
 ```
 [o]   Connected! You can now push artwork to this frame.
 This frame should now appear as my-frame when you log into Openframe at https://oframe.example.com.
@@ -125,7 +120,7 @@ Upon startup, the application will prompt you for your Openframe username and pa
 For DEBUG output, set the DEBUG env var:
 
 ```bash
-$ DEBUG=* npm start
+$ DEBUG=* openframe
 ```
 
 ### Configuration files
