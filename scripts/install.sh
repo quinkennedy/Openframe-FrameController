@@ -19,6 +19,8 @@ FRAMEDATA='{ "name": "" }'
  function get_frame_config {
 #----------------------------------------------------------------------------
 # Get the information needed to configure the name and credentials of this frame
+  echo -e "\n***** Collecting configuration information"
+
   # Get existing credentials if any
   [ -r "$USERFILE" ] && USERDATA=$(cat "$USERFILE")
 
@@ -37,11 +39,12 @@ FRAMEDATA='{ "name": "" }'
 
   ### Get Password
   PASSWD=$(echo "$USERDATA" | jq ".password" 2>/dev/null | tr -d '"')
-  [ $PASSWD == "null" ] && PASSWD=""
+  [ "$PASSWD" == "null" ] && PASSWD=""
   while [ 1 ]; do
     local HIDDEN=""
     [ ! -z "$PASSWD" ] && HIDDEN="*****"
-    read -p "Enter your Openframe password ($HIDDEN): " NPASSWD
+    read -p -s "Enter your Openframe password ($HIDDEN): " NPASSWD
+    echo
     [ ! -z "$NPASSWD" ] && PASSWD="$NPASSWD"
     [ -z "$PASSWD" ] && continue
     break
@@ -55,7 +58,7 @@ FRAMEDATA='{ "name": "" }'
   ### Get Framename
   [ -r $FRAMEFILE ] && FRAMEDATA=$(cat $FRAMEFILE)
   FRAME=$(echo "$FRAMEDATA" | jq ".name" 2>/dev/null | tr -d '"')
-  [ $FRAME == "null" ] && FRAME=""
+  [ "$FRAME" == "null" ] && FRAME=""
   while [ 1 ]; do
     read -p "Enter a name for this Frame ($FRAME): " NFRAME
     [[ ! "$NFRAME" =~ ^[-a-zA-Z0-9_]*$ ]] && continue
@@ -118,7 +121,7 @@ FRAMEDATA='{ "name": "" }'
   echo -e "\n***** Installing $DPACKAGE"
   dpkg -s $DPACKAGE > /dev/null 2>&1;
   if [ $? -gt 0 ]; then
-    sudo apt update && sudo install -y $DPACKAGE
+    sudo apt update && sudo apt install -y $DPACKAGE
   else
     echo $DPACKAGE is already installed
   fi
@@ -140,7 +143,9 @@ FRAMEDATA='{ "name": "" }'
   
   cd ~/
   curl -s https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
-  source ~/.bashrc
+
+  . ~/.nvm/nvm.sh
+  local NVM_VERS=$(nvm --version 2>/dev/null)
 } # install_nvm
 
 #----------------------------------------------------------------------------
@@ -151,6 +156,7 @@ FRAMEDATA='{ "name": "" }'
 
   echo -e "\n***** Installing nodejs $NODE_VERS"
   nvm install $NODE_VERS
+  source ~/.bashrc
 } # install_node
 
 #----------------------------------------------------------------------------
@@ -170,19 +176,19 @@ FRAMEDATA='{ "name": "" }'
 #----------------------------------------------------------------------------
 # Make sure the frame controller configuration is initialized if needed
   echo -e "\n***** Installing initial configuration"
-  if [ ! -d  ~/.openframe/ ]; then
+  if [ ! -d  $CFGDIR/ ]; then
     echo "Creating configuration directory at ~/.openframe/"
-    mkdir -p ~/.openframe
+    mkdir -p $CFGDIR
   fi
 
-  if [ ! -r ~/.openframe/.ofrc ]; then
-    echo "Initializing ~/.openframe/.ofrc"
-    cp -p .ofrc ~/.openframe/
+  if [ ! -r $OFRCFILE ]; then
+    echo "Initializing $OFRCFILE"
+    echo "$OFRC" > $OFRCFILE    
   fi
  
   # ~/.openframe/.env is used in the service script
-  env | grep NVM_ > ~/.openframe/.env
-  echo "PATH=$PATH" >> ~/.openframe/.env
+  env | grep NVM_ > $CFGDIR/.env
+  echo "PATH=$PATH" >> $CFGDIR/.env
 } # install_config
 
 #----------------------------------------------------------------------------
@@ -231,11 +237,11 @@ FRAMEDATA='{ "name": "" }'
 #----------------------------------------------------------------------------
 # main
 #----------------------------------------------------------------------------
+  install_dpackage jq
+  install_dpackage git
   get_frame_config
   install_nvm
   install_node 14
-  install_dpackage git
-  install_dpackage jq
   install_framectrl
   install_config
   install_service
