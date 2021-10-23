@@ -4,10 +4,11 @@
 # tested on Raspberry 3 and 4 running Raspbian 10 (buster) and 11 (bullseye)
 
 # Default Values
-CFGDIR=$(ls -d ~/".openframe")
+HOMEDIR=$(ls -d ~)
+CFGDIR="$HOMEDIR/.openframe"
 
 OFRCFILE="$CFGDIR/.ofrc"
-OFRC='{ "network": { "api_base":"", "app_base":""}, "autoboot": ""}'
+OFRCDATA='{ "network": { "api_base":"", "app_base":""}, "autoboot": ""}'
 
 USERFILE="$CFGDIR/user.json"
 USERDATA='{ "username": "", "password": "" }'
@@ -53,7 +54,6 @@ FRAMEDATA='{ "name": "" }'
   USERDATA=$(echo "$USERDATA" | jq ".password |= \"$PASSWD\"")
 
   echo "$USERDATA"
-  # echo "$USERDATA" > $USERFILE
 
   ### Get Framename
   [ -r $FRAMEFILE ] && FRAMEDATA=$(cat $FRAMEFILE)
@@ -69,10 +69,9 @@ FRAMEDATA='{ "name": "" }'
   FRAMEDATA=$(echo "$FRAMEDATA" | jq ".name |= \"$FRAME\"")
 
   echo "$FRAMEDATA"
-  # echo "$FRAMEDATA" > $FRAEMFILE
 
   ### Ask for Autoboot
-  [ -r $OFRCFILE ] && OFRC=$(cat $OFRCFILE)
+  [ -r $OFRCFILE ] && OFRCDATA=$(cat $OFRCFILE)
   while [ 1 ]; do
     read -p "Do you want to boot openframe on startup (Y/n): " AUTOBOOT
     [[ ! "$AUTOBOOT" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
@@ -86,29 +85,28 @@ FRAMEDATA='{ "name": "" }'
     AUTOBOOT="false"
   fi
   echo "AUTOBOOT: $AUTOBOOT"
-  OFRC=$(echo "$OFRC" | jq ".autoboot |= \"$AUTOBOOT\"")
+  OFRCDATA=$(echo "$OFRCDATA" | jq ".autoboot |= \"$AUTOBOOT\"")
 
   # Get server URLs
   URLPAT='^https?://[-A-Za-z0-9]+\.[-A-Za-z0-9\.]+(:[0-9]+)?$'
 
-  API_BASE_STD=$(echo "$OFRC" | jq .network.api_base | tr -d '"')
+  API_BASE_STD=$(echo "$OFRCDATA" | jq .network.api_base | tr -d '"')
   until [[ $API_BASE =~ $URLPAT ]]; do
     read -p "URL to be used for API server ($API_BASE_STD)? " API_BASE
     [ -z $API_BASE ] && API_BASE=$API_BASE_STD
   done
   echo "API_BASE: $API_BASE"
-  OFRC=$(echo "$OFRC" | jq ".network.api_base |= \"$API_BASE\"")
+  OFRCDATA=$(echo "$OFRCDATA" | jq ".network.api_base |= \"$API_BASE\"")
 
-  APP_BASE_STD=$(echo "$OFRC" | jq .network.app_base | tr -d '"')
+  APP_BASE_STD=$(echo "$OFRCDATA" | jq .network.app_base | tr -d '"')
   until [[ $APP_BASE =~ $URLPAT ]]; do
     read -p "URL to be used for Web server ($APP_BASE_STD)? " APP_BASE
     [ -z $APP_BASE ] && APP_BASE=$APP_BASE_STD
   done
   echo "APP_BASE: $APP_BASE"
-  OFRC=$(echo "$OFRC" | jq ".network.app_base |= \"$APP_BASE\"")
+  OFRCDATA=$(echo "$OFRCDATA" | jq ".network.app_base |= \"$APP_BASE\"")
 
-  echo "$OFRC"
-  # echo "$OFRC" > $OFRCFILE
+  echo "$OFRCDATA"
 } # get_frame_config
 
 #----------------------------------------------------------------------------
@@ -177,14 +175,18 @@ FRAMEDATA='{ "name": "" }'
 # Make sure the frame controller configuration is initialized if needed
   echo -e "\n***** Installing initial configuration"
   if [ ! -d  $CFGDIR/ ]; then
-    echo "Creating configuration directory at ~/.openframe/"
+    echo "Creating configuration directory at $CFGDIR"
     mkdir -p $CFGDIR
   fi
 
-  if [ ! -r $OFRCFILE ]; then
-    echo "Initializing $OFRCFILE"
-    echo "$OFRC" > $OFRCFILE    
-  fi
+  echo "Writing server information to $OFRCFILE"
+  echo "$OFRCDATA" > $OFRCFILE
+
+  echo "Writing user configuration to $USERFILE"
+  echo "$USERDATA" > $USERFILE
+
+  echo "Writing frame configuration to $FRAMEFILE"
+  echo "$FRAMEDATA" > $FRAMEFILE
  
   # ~/.openframe/.env is used in the service script
   env | grep NVM_ > $CFGDIR/.env
@@ -222,16 +224,16 @@ FRAMEDATA='{ "name": "" }'
   echo -e "\n***** Installing Openframe default media extensions"
 
   echo "Installing Openframe-ImageViewer"
-  openframe -i github:mataebi/Openframe-ImageViewer
+  npm install -g github:mataebi/Openframe-ImageViewer --save
 
   echo "Installing Openframe-VideoViewer"
-  openframe -i github:mataebi/Openframe-VideoViewer
+  npm install -g github:mataebi/Openframe-VideoViewer --save
 
   echo "Installing Openframe-WebsiteViewer"
-  openframe -i github:mataebi/Openframe-WebsiteViewer
+  npm install -g github:mataebi/Openframe-WebsiteViewer --save
 
   echo "Installing Openframe-glslViewer"
-  openframe -i github:mataebi/Openframe-glslViewer
+  npm install -g github:mataebi/Openframe-glslViewer --save
 } # install_extensions
 
 #----------------------------------------------------------------------------
@@ -248,4 +250,4 @@ FRAMEDATA='{ "name": "" }'
   install_command
   install_extensions
 
-  echo -e '\nInstallation complete. Run "openframe" to configure and start the frame'
+  echo -e '\nInstallation complete. Run "source ~/.bashrc; openframe" to configure and start the frame'
