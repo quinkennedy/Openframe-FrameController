@@ -42,8 +42,8 @@ FRAMEDATA='{ "name": "" }'
   [ "$PASSWD" == "null" ] && PASSWD=""
   while [ 1 ]; do
     local HIDDEN=""
-    [ ! -z "$PASSWD" ] && HIDDEN="*****"
-    read -p -s "Enter your Openframe password ($HIDDEN): " NPASSWD
+    [ ! -z "$PASSWD" ] && HIDDEN='*****'
+    read -s -p "Enter your Openframe password ($HIDDEN): " NPASSWD
     echo
     [ ! -z "$NPASSWD" ] && PASSWD="$NPASSWD"
     [ -z "$PASSWD" ] && continue
