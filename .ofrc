@@ -1,6 +1,0 @@
-{
-  "network": {
-    "api_base": "https://api.openframe.io",
-    "app_base": "https://openframe.io"
-  }
-}
