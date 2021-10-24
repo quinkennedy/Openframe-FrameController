@@ -223,16 +223,16 @@ FRAMEDATA='{ "name": "" }'
 # Make sure the default media extensions are installed
   echo -e "\n***** Installing Openframe default media extensions"
 
-  echo "Installing Openframe-ImageViewer"
+  echo -e "***** Installing Openframe-ImageViewer"
   npm install -g github:mataebi/Openframe-ImageViewer --save
 
-  echo "Installing Openframe-VideoViewer"
+  echo -e "***** Installing Openframe-VideoViewer"
   npm install -g github:mataebi/Openframe-VideoViewer --save
 
-  echo "Installing Openframe-WebsiteViewer"
+  echo -e "***** Installing Openframe-WebsiteViewer"
   npm install -g github:mataebi/Openframe-WebsiteViewer --save
 
-  echo "Installing Openframe-glslViewer"
+  echo -e "***** Installing Openframe-glslViewer"
   npm install -g github:mataebi/Openframe-glslViewer --save
 } # install_extensions
 
@@ -250,4 +250,6 @@ FRAMEDATA='{ "name": "" }'
   install_command
   install_extensions
 
-  echo -e '\nInstallation complete. Run "source ~/.bashrc; openframe" to configure and start the frame'
+  echo -e '\n***********************************************************'
+  echo   -e ' Installation complete. Run "openframe" to start the frame'
+  echo   -e '***********************************************************'
