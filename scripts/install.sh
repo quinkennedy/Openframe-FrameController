@@ -194,7 +194,10 @@ FRAMEDATA='{ "name": "" }'
   echo -e "\n***** Installing frame controller service"
 
   echo "Installing service at /lib/systemd/system/of-framectrl.service"
-  sudo cp -p $HOMEDIR/Openframe-FrameController/scripts/of-framectrl.service /lib/systemd/system/
+  local SERVICE_FILE=/usr/lib/systemd/system/of-framectrl.service
+  sudo cp -p $HOMEDIR/Openframe-FrameController/scripts/of-framectrl.service $SERVICE_FILE
+  sudo sed -i "s|<user>|$(id -un)|g" $SERVICE_FILE
+  sudo sed -i "s|<configdir>|$CFGDIR|g" $SERVICE_FILE
   sudo systemctl daemon-reload
 
   if [ $AUTOBOOT == "true" ]; then

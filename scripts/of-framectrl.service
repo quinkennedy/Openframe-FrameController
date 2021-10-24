@@ -9,9 +9,9 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=maebi
+User=<user>
 PIDFile=/run/offramectrl.pid
-EnvironmentFile=/home/maebi/.openframe/.env
+EnvironmentFile=<configdir>/.env
 Environment="DEBUG=*"
 Environment="SERVICE=true"
 ExecStart=/usr/local/bin/openframe
