@@ -14,7 +14,6 @@ PIDFile=/run/offramectrl.pid
 EnvironmentFile=/home/maebi/.openframe/.env
 Environment="DEBUG=*"
 Environment="SERVICE=true"
-WorkingDirectory=/home/maebi/.nvm/versions/node/v14.18.1/bin/
 ExecStart=/usr/local/bin/openframe
 
 [Install]
