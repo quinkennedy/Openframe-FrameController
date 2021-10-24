@@ -35,7 +35,6 @@ FRAMEDATA='{ "name": "" }'
     [ -z "$USER" ] && continue
     break
   done
-  echo "USER: $USER"
   USERDATA=$(echo "$USERDATA" | jq ".username |= \"$USER\"")
 
   ### Get Password
@@ -50,10 +49,7 @@ FRAMEDATA='{ "name": "" }'
     [ -z "$PASSWD" ] && continue
     break
   done
-  echo "PASSWD: $PASSWD"
   USERDATA=$(echo "$USERDATA" | jq ".password |= \"$PASSWD\"")
-
-  echo "$USERDATA"
 
   ### Get Framename
   [ -r $FRAMEFILE ] && FRAMEDATA=$(cat $FRAMEFILE)
@@ -65,10 +61,7 @@ FRAMEDATA='{ "name": "" }'
     [ ! -z "$NFRAME" ] && FRAME=$NFRAME
     break
   done
-  echo "FRAME: $FRAME"
   FRAMEDATA=$(echo "$FRAMEDATA" | jq ".name |= \"$FRAME\"")
-
-  echo "$FRAMEDATA"
 
   ### Ask for Autoboot
   [ -r $OFRCFILE ] && OFRCDATA=$(cat $OFRCFILE)
@@ -84,7 +77,6 @@ FRAMEDATA='{ "name": "" }'
   else
     AUTOBOOT="false"
   fi
-  echo "AUTOBOOT: $AUTOBOOT"
   OFRCDATA=$(echo "$OFRCDATA" | jq ".autoboot |= \"$AUTOBOOT\"")
 
   # Get server URLs
@@ -95,7 +87,6 @@ FRAMEDATA='{ "name": "" }'
     read -p "URL to be used for API server ($API_BASE_STD)? " API_BASE
     [ -z $API_BASE ] && API_BASE=$API_BASE_STD
   done
-  echo "API_BASE: $API_BASE"
   OFRCDATA=$(echo "$OFRCDATA" | jq ".network.api_base |= \"$API_BASE\"")
 
   APP_BASE_STD=$(echo "$OFRCDATA" | jq .network.app_base | tr -d '"')
@@ -103,10 +94,7 @@ FRAMEDATA='{ "name": "" }'
     read -p "URL to be used for Web server ($APP_BASE_STD)? " APP_BASE
     [ -z $APP_BASE ] && APP_BASE=$APP_BASE_STD
   done
-  echo "APP_BASE: $APP_BASE"
   OFRCDATA=$(echo "$OFRCDATA" | jq ".network.app_base |= \"$APP_BASE\"")
-
-  echo "$OFRCDATA"
 } # get_frame_config
 
 #----------------------------------------------------------------------------
