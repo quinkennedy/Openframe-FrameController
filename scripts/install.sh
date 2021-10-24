@@ -203,8 +203,13 @@ FRAMEDATA='{ "name": "" }'
   sudo cp -p ~/Openframe-FrameController/scripts/of-framectrl.service /lib/systemd/system/
   sudo systemctl daemon-reload
 
-  echo "Enabling services"
-  sudo systemctl enable of-framectrl.service
+  if [ $AUTOBOOT == "true" ]; then
+    echo "Enabling autostart of service"
+    sudo systemctl enable of-framectrl.service
+  else
+    echo "Disabling autostart of service"
+    sudo systemctl disable of-framectrl.service
+  fi
   sudo systemctl enable systemd-networkd-wait-online.service
 } # install_service
 
@@ -223,16 +228,16 @@ FRAMEDATA='{ "name": "" }'
 # Make sure the default media extensions are installed
   echo -e "\n***** Installing Openframe default media extensions"
 
-  echo -e "***** Installing Openframe-ImageViewer"
+  echo -e "\n***** Installing Openframe-ImageViewer"
   npm install -g github:mataebi/Openframe-ImageViewer --save
 
-  echo -e "***** Installing Openframe-VideoViewer"
+  echo -e "\n***** Installing Openframe-VideoViewer"
   npm install -g github:mataebi/Openframe-VideoViewer --save
 
-  echo -e "***** Installing Openframe-WebsiteViewer"
+  echo -e "\n***** Installing Openframe-WebsiteViewer"
   npm install -g github:mataebi/Openframe-WebsiteViewer --save
 
-  echo -e "***** Installing Openframe-glslViewer"
+  echo -e "\n***** Installing Openframe-glslViewer"
   npm install -g github:mataebi/Openframe-glslViewer --save
 } # install_extensions
 
@@ -250,6 +255,10 @@ FRAMEDATA='{ "name": "" }'
   install_command
   install_extensions
 
-  echo -e '\n***********************************************************'
-  echo   -e ' Installation complete. Run "openframe" to start the frame'
-  echo   -e '***********************************************************'
+  echo
+  echo '***************************************************************'
+  echo '*                                                             *'
+  echo '*  Installation complete. Run "openframe" to start the frame  *'
+  echo '*                                                             *'
+  echo '***************************************************************'
+  echo
