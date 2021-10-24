@@ -125,7 +125,7 @@ FRAMEDATA='{ "name": "" }'
 # Make sure nvm is installed
   echo -e "\n***** Installing NVM"
 
-  . ~/.nvm/nvm.sh
+  . $HOMEDIR/.nvm/nvm.sh
   local NVM_VERS=$(nvm --version 2>/dev/null)
 
   if [ ! -z "$NVM_VERS" ]; then
@@ -133,10 +133,10 @@ FRAMEDATA='{ "name": "" }'
     return
   fi
   
-  cd ~/
+  cd $HOMEDIR/
   curl -s https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
 
-  . ~/.nvm/nvm.sh
+  . $HOMEDIR/.nvm/nvm.sh
   local NVM_VERS=$(nvm --version 2>/dev/null)
 } # install_nvm
 
@@ -148,7 +148,7 @@ FRAMEDATA='{ "name": "" }'
 
   echo -e "\n***** Installing nodejs $NODE_VERS"
   nvm install $NODE_VERS
-  source ~/.bashrc
+  source $HOMEDIR/.bashrc
 } # install_node
 
 #----------------------------------------------------------------------------
@@ -156,7 +156,7 @@ FRAMEDATA='{ "name": "" }'
 #----------------------------------------------------------------------------
 # Make sure node and npm are installed under nvm
   echo -e "\n***** Installing Openframe FrameController"
-  cd ~/
+  cd $HOMEDIR/
   git clone https://github.com/mataebi/Openframe-FrameController.git
   cd Openframe-FrameController
   npm install
@@ -194,7 +194,7 @@ FRAMEDATA='{ "name": "" }'
   echo -e "\n***** Installing frame controller service"
 
   echo "Installing service at /lib/systemd/system/of-framectrl.service"
-  sudo cp -p ~/Openframe-FrameController/scripts/of-framectrl.service /lib/systemd/system/
+  sudo cp -p $HOMEDIR/Openframe-FrameController/scripts/of-framectrl.service /lib/systemd/system/
   sudo systemctl daemon-reload
 
   if [ $AUTOBOOT == "true" ]; then
@@ -213,7 +213,7 @@ FRAMEDATA='{ "name": "" }'
 # Make sure the frame controller command is properly installed
   echo -e '\n***** Installing "openframe" command'
   echo "Activating /usr/local/bin/openframe"
-  [ ! -x /usr/local/bin/openframe ] && sudo ln -s ~/Openframe-FrameController/bin/cli.js /usr/local/bin/openframe
+  [ ! -x /usr/local/bin/openframe ] && sudo ln -s $HOMEDIR/Openframe-FrameController/bin/cli.js /usr/local/bin/openframe
 } # install_command
 
 #----------------------------------------------------------------------------
@@ -241,7 +241,6 @@ FRAMEDATA='{ "name": "" }'
   install_dpackage jq
   install_dpackage git
   get_frame_config
-  exit
   install_nvm
   install_node 14
   install_framectrl
