@@ -253,9 +253,10 @@ FRAMEDATA='{ "name": "" }'
   install_extensions
 
   echo
-  echo '***************************************************************'
-  echo '*                                                             *'
-  echo '*  Installation complete. Run "openframe" to start the frame  *'
-  echo '*                                                             *'
-  echo '***************************************************************'
+  echo '*************************************************************'
+  echo '*                                                           *'
+  echo '*  Installation complete. Execute "source ~/.bashrc" first  *'
+  echo '*          then run "openframe" to start the frame          *'
+  echo '*                                                           *'
+  echo '*************************************************************'
   echo
