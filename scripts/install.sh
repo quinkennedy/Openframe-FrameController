@@ -27,7 +27,7 @@ FRAMEDATA='{ "name": "" }'
 
   ### Get Username
   USER=$(echo "$USERDATA" | jq ".username" 2>/dev/null | tr -d '"')
-  [ "$USER" == "null" ] && USER=""
+  [ -z "$USER" ] || [ "$USER" == "null" ] && USER=$(id -un)
   while [ 1 ]; do
     read -p "Enter your Openframe username ($USER): " NUSER
     [[ ! "$NUSER" =~ ^[-a-zA-Z0-9_]*$ ]] && continue
@@ -54,7 +54,7 @@ FRAMEDATA='{ "name": "" }'
   ### Get Framename
   [ -r $FRAMEFILE ] && FRAMEDATA=$(cat $FRAMEFILE)
   FRAME=$(echo "$FRAMEDATA" | jq ".name" 2>/dev/null | tr -d '"')
-  [ "$FRAME" == "null" ] && FRAME=""
+  [ -z "$FRAME" ] || [ "$FRAME" == "null" ] && FRAME=$(hostname)
   while [ 1 ]; do
     read -p "Enter a name for this Frame ($FRAME): " NFRAME
     [[ ! "$NFRAME" =~ ^[-a-zA-Z0-9_]*$ ]] && continue
@@ -80,19 +80,25 @@ FRAMEDATA='{ "name": "" }'
   OFRCDATA=$(echo "$OFRCDATA" | jq ".autoboot |= \"$AUTOBOOT\"")
 
   # Get server URLs
-  URLPAT='^https?://[-A-Za-z0-9]+\.[-A-Za-z0-9\.]+(:[0-9]+)?$'
+  URLPAT='(^https?://[-A-Za-z0-9]+\.[-A-Za-z0-9\.]+(:[0-9]+)?$)|(^$)'
 
-  API_BASE_STD=$(echo "$OFRCDATA" | jq .network.api_base | tr -d '"')
-  until [[ $API_BASE =~ $URLPAT ]]; do
-    read -p "URL to be used for API server ($API_BASE_STD)? " API_BASE
-    [ -z $API_BASE ] && API_BASE=$API_BASE_STD
+  API_BASE=$(echo "$OFRCDATA" | jq .network.api_base | tr -d '"')
+  [ -z "$API_BASE" ] || [ "$API_BASE" == "null" ] && API_BASE="https://api.openframe.io"
+  while [ 1 ]; do
+    read -p "URL to be used for API server ($API_BASE)? " NAPI_BASE
+    [[ ! "$NAPI_BASE" =~ $URLPAT ]] && continue
+    [ ! -z "$NAPI_BASE" ] && API_BASE=$NAPI_BASE
+    break
   done
   OFRCDATA=$(echo "$OFRCDATA" | jq ".network.api_base |= \"$API_BASE\"")
 
-  APP_BASE_STD=$(echo "$OFRCDATA" | jq .network.app_base | tr -d '"')
-  until [[ $APP_BASE =~ $URLPAT ]]; do
-    read -p "URL to be used for Web server ($APP_BASE_STD)? " APP_BASE
-    [ -z $APP_BASE ] && APP_BASE=$APP_BASE_STD
+  APP_BASE=$(echo "$OFRCDATA" | jq .network.app_base | tr -d '"')
+  [ -z "$APP_BASE" ] || [ "$APP_BASE" == "null" ] && APP_BASE="https://openframe.io"
+  while [ 1 ]; do
+    read -p "URL to be used for Web server ($APP_BASE)? " NAPP_BASE
+    [[ ! "$NAPP_BASE" =~ $URLPAT ]] && continue
+    [ ! -z "$NAPP_BASE" ] && APP_BASE=$NAPP_BASE
+    break
   done
   OFRCDATA=$(echo "$OFRCDATA" | jq ".network.app_base |= \"$APP_BASE\"")
 } # get_frame_config
@@ -235,6 +241,7 @@ FRAMEDATA='{ "name": "" }'
   install_dpackage jq
   install_dpackage git
   get_frame_config
+  exit
   install_nvm
   install_node 14
   install_framectrl
