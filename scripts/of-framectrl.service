@@ -14,6 +14,7 @@ PIDFile=/run/offramectrl.pid
 EnvironmentFile=<configdir>/.env
 Environment="DEBUG=*"
 Environment="SERVICE=true"
+ExecStartPre=/bin/sleep 3
 ExecStart=/usr/local/bin/openframe
 
 [Install]
