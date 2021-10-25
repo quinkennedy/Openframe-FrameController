@@ -24,51 +24,6 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 # Get the information needed to configure the name and credentials of this frame
   echo -e "\n***** Collecting configuration information"
 
-  ### Ask for the need of time based screen control
-  while [ 1 ]; do
-    read -p "Do you want to turn off the screen at certain times (Y/n): " SCRCTRL
-    [[ ! "$SCRCTRL" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
-    [ -z $SCRCTRL ] && SCRCTRL="Y"
-    break
-  done
-
-  ### Get the on anf off time if time based screen control is needed
-  if [[ $SCRCTRL =~ ^[Yy] ]]; then
-    if [ -r $SCRCTRLFILE ]; then
-      STARTHOUR=$(grep "tvservice -p" $SCRCTRLFILE | cut -d" " -f2)
-      STARTMIN=$(grep "tvservice -p" $SCRCTRLFILE | cut -d" " -f1)
-      STOPHOUR=$(grep "tvservice -o" $SCRCTRLFILE | cut -d" " -f2)
-      STOPMIN=$(grep "tvservice -o" $SCRCTRLFILE | cut -d" " -f1)
-    else
-      STARTHOUR=8
-      STARTMIN=0
-      STOPHOUR=20
-      STOPMIN=0
-    fi 
-
-    ### Get screen start ime
-    while [ 1 ]; do
-      read -p "At what time should the screen be turned ON ($(printf '%02d:%02d' $STARTHOUR $STARTTMIN)): " STARTTIME
-      [[ ! "$STARTTIME" =~ (^[01]?[0-9]:[0-5][0-9]$)|(^2[0-3]:[0-5][0-9]$)|(^$) ]] && continue
-      if [ ! -z $STARTTIME ]; then
-        STARTHOUR=$(echo $STARTTIME | cut -d":" -f1)
-        STARTMIN=$(echo $STARTTIME | cut -d":" -f2)
-      fi
-      break
-    done
-
-    ### Get screen stop time
-    while [ 1 ]; do
-      read -p "At what time should the screen be turned OFF ($(printf '%02d:%02d' $STOPHOUR $STOPMIN)): " STOPTIME
-      [[ ! "$STOPTIME" =~ (^[01]?[0-9]:[0-5][0-9]$)|(^2[0-3]:[0-5][0-9]$)|(^$) ]] && continue
-      if [ ! -z $STOPTIME ]; then
-        STOPHOUR=$(echo $STOPTIME | cut -d":" -f1)
-        STOPMIN=$(echo $STOPTIME | cut -d":" -f2)
-      fi
-      break
-    done
-  fi
-
   # Get existing credentials if any
   [ -r "$USERFILE" ] && USERDATA=$(cat "$USERFILE")
 
@@ -125,6 +80,52 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
     AUTOBOOT="false"
   fi
   OFRCDATA=$(echo "$OFRCDATA" | jq ".autoboot |= \"$AUTOBOOT\"")
+
+  ### Ask for the need of time based screen control
+  while [ 1 ]; do
+    read -p "Do you want to turn off the screen at certain times (Y/n): " SCRCTRL
+    [[ ! "$SCRCTRL" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
+    [ -z $SCRCTRL ] && SCRCTRL="Y"
+    break
+  done
+
+  ### Get the on anf off time if time based screen control is needed
+  if [[ $SCRCTRL =~ ^[Yy] ]]; then
+    if [ -r $SCRCTRLFILE ]; then
+      STARTHOUR=$(grep "tvservice -p" $SCRCTRLFILE | cut -d" " -f2)
+      STARTMIN=$(grep "tvservice -p" $SCRCTRLFILE | cut -d" " -f1)
+      STOPHOUR=$(grep "tvservice -o" $SCRCTRLFILE | cut -d" " -f2)
+      STOPMIN=$(grep "tvservice -o" $SCRCTRLFILE | cut -d" " -f1)
+    else
+      STARTHOUR=8
+      STARTMIN=0
+      STOPHOUR=20
+      STOPMIN=0
+    fi 
+
+    ### Get screen start ime
+    while [ 1 ]; do
+      read -p "At what time should the screen be turned ON ($(printf '%02d:%02d' $STARTHOUR $STARTTMIN)): " STARTTIME
+      [[ ! "$STARTTIME" =~ (^[01]?[0-9]:[0-5][0-9]$)|(^2[0-3]:[0-5][0-9]$)|(^$) ]] && continue
+      if [ ! -z $STARTTIME ]; then
+        STARTHOUR=$(echo $STARTTIME | cut -d":" -f1)
+        STARTMIN=$(echo $STARTTIME | cut -d":" -f2)
+      fi
+      break
+    done
+
+    ### Get screen stop time
+    while [ 1 ]; do
+      read -p "At what time should the screen be turned OFF ($(printf '%02d:%02d' $STOPHOUR $STOPMIN)): " STOPTIME
+      [[ ! "$STOPTIME" =~ (^[01]?[0-9]:[0-5][0-9]$)|(^2[0-3]:[0-5][0-9]$)|(^$) ]] && continue
+      if [ ! -z $STOPTIME ]; then
+        STOPHOUR=$(echo $STOPTIME | cut -d":" -f1)
+        STOPMIN=$(echo $STOPTIME | cut -d":" -f2)
+      fi
+      break
+    done
+  fi
+
 
   # Get server URLs
   URLPAT='(^https?://[-A-Za-z0-9]+\.[-A-Za-z0-9\.]+(:[0-9]+)?$)|(^$)'
@@ -311,11 +312,11 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
   install_dpackage jq
   install_dpackage git
   get_frame_config
-  exit
   install_nvm
   install_node 14
   install_framectrl
   install_config
+  install_cron
   install_service
   install_command
   install_extensions
