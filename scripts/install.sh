@@ -126,8 +126,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
     done
   fi
 
-
-  # Get server URLs
+  ### Get API server URL
   URLPAT='(^https?://[-A-Za-z0-9]+\.[-A-Za-z0-9\.]+(:[0-9]+)?$)|(^$)'
 
   API_BASE=$(echo "$OFRCDATA" | jq .network.api_base | tr -d '"')
@@ -136,16 +135,23 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
     read -p "URL to be used for API server ($API_BASE)? " NAPI_BASE
     [[ ! "$NAPI_BASE" =~ $URLPAT ]] && continue
     [ ! -z "$NAPI_BASE" ] && API_BASE=$NAPI_BASE
+    echo -n "Testing access to $API_BASE ... "
+    [ -z "$(curl -si $API_BASE/explorer/swagger.json | grep '\"swagger\":')" ] && echo "failed" && continue
+    echo "successful"
     break
   done
   OFRCDATA=$(echo "$OFRCDATA" | jq ".network.api_base |= \"$API_BASE\"")
 
+  ### Get web server URL
   APP_BASE=$(echo "$OFRCDATA" | jq .network.app_base | tr -d '"')
   [ -z "$APP_BASE" ] || [ "$APP_BASE" == "null" ] && APP_BASE="https://openframe.io"
   while [ 1 ]; do
     read -p "URL to be used for Web server ($APP_BASE)? " NAPP_BASE
     [[ ! "$NAPP_BASE" =~ $URLPAT ]] && continue
     [ ! -z "$NAPP_BASE" ] && APP_BASE=$NAPP_BASE
+    echo -n "Testing access to $APP_BASE ... "
+    [ -z "$(curl -si $APP_BASE | grep '>Openframe<')" ] && echo "failed" && continue
+    echo "successful"
     break
   done
   OFRCDATA=$(echo "$OFRCDATA" | jq ".network.app_base |= \"$APP_BASE\"")
@@ -311,6 +317,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 #----------------------------------------------------------------------------
   install_dpackage jq
   install_dpackage git
+  install_dpackage curl
   get_frame_config
   install_nvm
   install_node 14
