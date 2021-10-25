@@ -302,6 +302,9 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
   echo -e "\n***** Installing Openframe-ImageViewer"
   npm install -g github:mataebi/Openframe-ImageViewer --save
 
+  echo -e "\n***** Installing Openframe-GifViewer"
+  npm install -g github:mataebi/Openframe-GifViewer --save
+
   echo -e "\n***** Installing Openframe-VideoViewer"
   npm install -g github:mataebi/Openframe-VideoViewer --save
 
