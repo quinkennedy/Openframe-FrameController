@@ -1,0 +1,3 @@
+# Turn the screen(s) on and off
+<startmin> <starthour> * * * root /usr/bin/tvservice -p; fbset -match
+<stopmin> <stophour> * * * root /usr/bin/tvservice -o
