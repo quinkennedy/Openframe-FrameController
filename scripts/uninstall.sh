@@ -63,6 +63,12 @@ NOASK=$1
     sudo rm /lib/systemd/system/of-framectrl.service
   fi
 
+  ask "Do you want to remove the timebased screen control on this frame"
+  if [ "$ANSWER" == "Y" ]; then
+    echo "***** Removing screen control cron job"
+    sudo rm /etc/cron.d/screenctrl
+  fi
+
   ask "Do you want to update the openframe install script of this machine"
   if [ "$ANSWER" == "Y" ]; then
     echo "***** Updating installation script"
