@@ -92,10 +92,10 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
   ### Get the on anf off time if time based screen control is needed
   if [[ $SCRCTRL =~ ^[Yy] ]]; then
     if [ -r $SCRCTRLFILE ]; then
-      STARTHOUR=$(grep "tvservice -p" $SCRCTRLFILE | cut -d" " -f2)
-      STARTMIN=$(grep "tvservice -p" $SCRCTRLFILE | cut -d" " -f1)
-      STOPHOUR=$(grep "tvservice -o" $SCRCTRLFILE | cut -d" " -f2)
-      STOPMIN=$(grep "tvservice -o" $SCRCTRLFILE | cut -d" " -f1)
+      STARTHOUR=$(grep "display_power 1" $SCRCTRLFILE | cut -d" " -f2)
+      STARTMIN=$(grep "display_power 1" $SCRCTRLFILE | cut -d" " -f1)
+      STOPHOUR=$(grep "display_power 0" $SCRCTRLFILE | cut -d" " -f2)
+      STOPMIN=$(grep "display_power 0" $SCRCTRLFILE | cut -d" " -f1)
     else
       STARTHOUR=8
       STARTMIN=0
@@ -255,6 +255,8 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 
     sudo sed -i "s|<stopmin>|$STOPMIN|g" $SCRCTRLFILE
     sudo sed -i "s|<stophour>|$STOPHOUR|g" $SCRCTRLFILE
+
+    sudo service cron restart
   else
     # Remove the cron file
     sudo rm $SCRCTRLFILE
