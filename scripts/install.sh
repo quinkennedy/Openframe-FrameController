@@ -211,7 +211,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 # Make sure node and npm are installed under nvm
   echo -e "\n***** Installing Openframe FrameController"
   cd $HOMEDIR/
-  git clone https://github.com/mataebi/Openframe-FrameController.git
+  git clone --depth=1 --branch=master https://github.com/mataebi/Openframe-FrameController.git
   cd Openframe-FrameController
   npm install
   npm audit fix
