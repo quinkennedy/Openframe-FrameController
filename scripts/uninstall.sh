@@ -32,7 +32,7 @@ NOASK=$1
   if [ "$ANSWER" == "Y" ]; then
     echo "***** Removing Openframe-FrameController"
     rm -rf ~/Openframe-FrameController
-    rm /usr/local/bin/openframe
+    sudo rm /usr/local/bin/openframe
   fi
 
   ask "Do you want to remove the frame configuration data?"
