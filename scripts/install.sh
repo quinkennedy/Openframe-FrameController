@@ -256,6 +256,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
     sudo sed -i "s|<stopmin>|$STOPMIN|g" $SCRCTRLFILE
     sudo sed -i "s|<stophour>|$STOPHOUR|g" $SCRCTRLFILE
 
+    sudo chown root:root $SCRCTRLFILE
     sudo service cron restart
   else
     # Remove the cron file

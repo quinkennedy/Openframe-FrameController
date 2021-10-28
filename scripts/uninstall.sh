@@ -69,7 +69,7 @@ NOASK=$1
     sudo rm /etc/cron.d/screenctrl
   fi
 
-  ask "Do you want to update the openframe install  and uninstall script of this machine"
+  ask "Do you want to update the openframe install and uninstall script of this machine"
   if [ "$ANSWER" == "Y" ]; then
     echo "***** Updating installation script"
     rm ~/install.sh
