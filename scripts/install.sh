@@ -208,7 +208,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 #----------------------------------------------------------------------------
  function install_framectrl {
 #----------------------------------------------------------------------------
-# Make sure node and npm are installed under nvm
+# Install the FrameController repository
   echo -e "\n***** Installing Openframe FrameController"
   cd $HOMEDIR/
   git clone --depth=1 --branch=master https://github.com/mataebi/Openframe-FrameController.git
