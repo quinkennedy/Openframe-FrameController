@@ -311,8 +311,8 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
   echo -e "\n***** Installing Openframe-WebsiteViewer"
   npm install -g github:mataebi/Openframe-WebsiteViewer --save
 
-  echo -e "\n***** Installing Openframe-glslViewer"
-  npm install -g github:mataebi/Openframe-glslViewer --save
+  # echo -e "\n***** Installing Openframe-glslViewer"
+  # npm install -g github:mataebi/Openframe-glslViewer --save
 } # install_extensions
 
 #----------------------------------------------------------------------------
