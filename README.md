@@ -2,6 +2,19 @@
 
 This is a fork and updated version of the [original Openframe Frame Conroller project](https://github.com/OpenframeProject/Openframe). This README file explains how to install and configure the Openframe frame controller.
 
+## Installation
+
+To install and configure an Openframe frame controller run the following command:
+```
+bash <(curl -s https://raw.githubusercontent.com/mataebi/Openframe-FrameController/master/setup/install.sh)
+```
+After asking you some questions about the setup you would like to use the install script should take care of the rest.
+
+You may uninstall the software by using the uninstall script running the following comand:
+```
+bash <(curl -s https://raw.githubusercontent.com/mataebi/Openframe-FrameController/master/setup/uninstall.sh)
+```
+
 ## Overview
 
 The Openframe frame controller is the software that runs on the frame itself (i.e. the RPi), acting as a process manager for starting, stopping, and transitioning between artworks. It communicates with an [Openframe API Server](https://github.com/mataebi/Openframe-APIServer) server via a REST API, and connects to a [global event system](https://github.com/OpenframeProject/Openframe-PubSubServer) allowing for realtime updates. The idea is to work towards a system which supports the basic goals of Openframe, guided by a handful of [pilot use cases](https://github.com/OpenframeProject/Openframe-APIServer/wiki/Pilot-Use-Cases).
