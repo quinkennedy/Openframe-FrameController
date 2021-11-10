@@ -247,7 +247,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 # Install or remove the cron job to turn the screen on and off
   if [[ $SCRCTRL =~ ^[Yy] ]]; then
     # Install the cron file
-    sudo cp -p $HOMEDIR/Openframe-FrameController/scripts/screencrtl $SCRCTRLFILE
+    sudo cp -p $HOMEDIR/Openframe-FrameController/setup/screencrtl $SCRCTRLFILE
 
     # Set start and stop time for the screen
     sudo sed -i "s|<startmin>|$STARTMIN|g" $SCRCTRLFILE
@@ -272,7 +272,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 
   echo "Installing service at /lib/systemd/system/of-framectrl.service"
   local SERVICE_FILE=/usr/lib/systemd/system/of-framectrl.service
-  sudo cp -p $HOMEDIR/Openframe-FrameController/scripts/of-framectrl.service $SERVICE_FILE
+  sudo cp -p $HOMEDIR/Openframe-FrameController/setup/of-framectrl.service $SERVICE_FILE
   sudo sed -i "s|<user>|$(id -un)|g" $SERVICE_FILE
   sudo sed -i "s|<configdir>|$CFGDIR|g" $SERVICE_FILE
   sudo systemctl daemon-reload
