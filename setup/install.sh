@@ -19,6 +19,28 @@ FRAMEDATA='{ "name": "" }'
 SCRCTRLFILE="/etc/cron.d/screenctrl"
 
 #----------------------------------------------------------------------------
+ function check_diskspace {
+#----------------------------------------------------------------------------
+# Make sure there is enough space to install the Openframe Frameconroller
+  FREESPC=$(df / | tail -1 | tr -s " " | cut -d' ' -f4)
+  if [ $FREESPC -lt 2097152 ]; then
+    echo "Please make sure there are a least 2 GByte of free diskspace available"
+    while [ 1 ]; do
+      read -p "Do you want to turn off the screen at certain times (Y/n): " EXTROOT
+      [[ ! "$EXTROOT" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
+      [ -z $EXTROOT ] && EXTROOT="N"
+      break
+    done
+
+    if [[ $EXTROOTT =~ ^[Yy] ]]; then
+      sudo raspi-config nonint do_expand_rootfs
+      echo "IMPORTANT: Make sure to reboot your system right now!"
+      exit 1
+    fi
+  fi
+} # check_diskspace
+
+#----------------------------------------------------------------------------
  function get_frame_config {
 #----------------------------------------------------------------------------
 # Get the information needed to configure the name and credentials of this frame
@@ -318,6 +340,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 #----------------------------------------------------------------------------
 # main
 #----------------------------------------------------------------------------
+  check_diskspace
   install_dpackage jq
   install_dpackage git
   install_dpackage curl
