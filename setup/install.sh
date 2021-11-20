@@ -87,21 +87,21 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
   done
   FRAMEDATA=$(echo "$FRAMEDATA" | jq ".name |= \"$FRAME\"")
 
-  ### Ask for Autoboot
+  ### Ask for auto start at boot time
   [ -r $OFRCFILE ] && OFRCDATA=$(cat $OFRCFILE)
   while [ 1 ]; do
-    read -p "Do you want to boot openframe on startup (Y/n): " AUTOBOOT
-    [[ ! "$AUTOBOOT" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
-    [ -z $AUTOBOOT ] && AUTOBOOT="Y"
+    read -p "Do you want to autostart the openframe controller at boot time (Y/n): " AUTOSTART
+    [[ ! "$AUTOSTART" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
+    [ -z $AUTOSTART ] && AUTOSTART="Y"
     break
   done
 
-  if [[ $AUTOBOOT =~ ^[Yy] ]]; then
-    AUTOBOOT="true"
+  if [[ $AUTOSTART =~ ^[Yy] ]]; then
+    AUTOSTART="true"
   else
-    AUTOBOOT="false"
+    AUTOSTART="false"
   fi
-  OFRCDATA=$(echo "$OFRCDATA" | jq ".autoboot |= \"$AUTOBOOT\"")
+  OFRCDATA=$(echo "$OFRCDATA" | jq ".autoboot |= \"$AUTOSTART\"")
 
   ### Ask for the need of time based screen control
   while [ 1 ]; do
@@ -299,7 +299,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
   sudo sed -i "s|<configdir>|$CFGDIR|g" $SERVICE_FILE
   sudo systemctl daemon-reload
 
-  if [ $AUTOBOOT == "true" ]; then
+  if [ $AUTOSTART == "true" ]; then
     echo "Enabling autostart of service"
     sudo systemctl enable of-framectrl.service
   else
