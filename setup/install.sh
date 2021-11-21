@@ -32,7 +32,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
       break
     done
 
-    if [[ $EXTROOTT =~ ^[Yy] ]]; then
+    if [[ $EXTROOT =~ ^[Yy] ]]; then
       curl -s https://raw.githubusercontent.com/mataebi/expand_rootfs/master/expand_rootfs | sudo bash
       exit 1
     fi
