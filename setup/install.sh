@@ -26,7 +26,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
   if [ $FREESPC -lt 2097152 ]; then
     echo "Please make sure there are a least 2 GByte of free diskspace available"
     while [ 1 ]; do
-      read -p "Do you want to try the extend the root filesystem to its maximum size (Y/n): " EXTROOT
+      read -p "Do you want to try the extend the root filesystem to its maximum size (y/N): " EXTROOT
       [[ ! "$EXTROOT" =~ (^[Yy][Ee]?[Ss]?$)|(^[Nn][Oo]?$)|(^$) ]] && continue
       [ -z $EXTROOT ] && EXTROOT="N"
       break
@@ -34,7 +34,6 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 
     if [[ $EXTROOTT =~ ^[Yy] ]]; then
       curl -s https://raw.githubusercontent.com/mataebi/expand_rootfs/master/expand_rootfs | sudo bash
-      echo "IMPORTANT: Make sure to reboot your system right now!"
       exit 1
     fi
   fi
