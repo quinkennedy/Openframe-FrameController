@@ -26,7 +26,8 @@ ext_man.installExtensions = function(extensions, force) {
 
     // install each extensions
     for (key in extensions) {
-        if (extensions.hasOwnProperty(key)) {
+        // suppress installation of openframe-glslviewer extension
+        if (extensions.hasOwnProperty(key) && (key !== 'openframe-glslviewer')) {
             promises.push(_installExtension(key, extensions[key], _force));
         }
     }
