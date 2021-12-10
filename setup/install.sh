@@ -200,7 +200,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
 # Make sure nvm is installed
   echo -e "\n***** Installing NVM"
 
-  . $HOMEDIR/.nvm/nvm.sh
+  [ -x $HOMEDIR/.nvm/nvm.sh ] && . $HOMEDIR/.nvm/nvm.sh
   local NVM_VERS=$(nvm --version 2>/dev/null)
 
   if [ ! -z "$NVM_VERS" ]; then
@@ -211,7 +211,7 @@ SCRCTRLFILE="/etc/cron.d/screenctrl"
   cd $HOMEDIR/
   curl -s https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
 
-  . $HOMEDIR/.nvm/nvm.sh
+  [ -x $HOMEDIR/.nvm/nvm.sh ] && . $HOMEDIR/.nvm/nvm.sh
   local NVM_VERS=$(nvm --version 2>/dev/null)
 } # install_nvm
 
