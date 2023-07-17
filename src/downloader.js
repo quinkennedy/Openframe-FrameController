@@ -15,8 +15,10 @@ const fs = require('fs'),
   status = require('http-status'),
   prettyBytes = require('pretty-bytes'),
   humanizeDuration = require('humanize-duration'),
-  chalk = require('chalk');
-
+  chalk = require('chalk'),
+  config = require('./config'),
+  sprintf = require('sprintf-js').sprintf;
+const { exec } = require('child_process');
 
 const artworkDir = '/tmp';
 
@@ -89,7 +91,37 @@ function downloadFile(file_url, file_output_name) {
     .on('finish', function() {
       debug('Artwork downloaded')
       finished = true
-            
+
+      // configure the upload info at ~/.openframe/.ofrc
+      const upload_url = config.ofrc.upload.url;
+      const upload_secret = config.ofrc.upload.secret;
+
+      // If upload_url and upload_secret are defined, try to upload the file just downloaded to the server specified by upload_url
+      if (typeof upload_url !== 'undefined' && typeof upload_secret !== 'undefined') {
+        // Try to get the filename based on the extension used
+        const match = file_url.match(/([^/?&=]+\.(gif|gifv|mp4|png|jpg|jpeg))/i);
+
+        // If the filename was not found use the local download name
+        const upload_filename = match ? match[1] : file_name;
+
+        // Create the curl command needed for the upload
+        const curlcmd = sprintf("curl -s -L -k -T %s -u '%s:' -H 'X-Requested-With: XMLHttpRequest' %s/%s", file_path, upload_secret, upload_url, upload_filename);
+
+        // Try to execute the command
+        console.log("Trying to upload using: %s", curlcmd);
+        exec(curlcmd, (error, stdout, stderr) => {
+          if (error) {
+            console.log(`Upload execution error: ${error.message}`);
+          } else if (stderr) {
+            console.log(`Upload execution error: ${stderr}`);
+          } else if (stdout) {
+            console.log(`Upload command returns: ${stdout}`);
+          } else {
+            console.log('Upload of ' + upload_filename + ' executed successfully');
+          }
+        });
+      } // if upload
+
       return resolve(file_path);
     });
   });
