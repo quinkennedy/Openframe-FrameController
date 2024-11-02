@@ -93,8 +93,8 @@ function downloadFile(file_url, file_output_name) {
       finished = true
 
       // configure the upload info at ~/.openframe/.ofrc
-      const upload_url = config.ofrc.upload.url;
-      const upload_secret = config.ofrc.upload.secret;
+      const upload_url = config.ofrc.upload?.url;
+      const upload_secret = config.ofrc.upload?.secret;
 
       // If upload_url and upload_secret are defined, try to upload the file just downloaded to the server specified by upload_url
       if (typeof upload_url !== 'undefined' && typeof upload_secret !== 'undefined') {
